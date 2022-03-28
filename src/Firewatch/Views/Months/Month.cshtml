@@ -1,0 +1,180 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, AuthoringTagHelpers
+
+@using Firewatch.Data;
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Month</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+    <button type="button" class="btn btn-success" onclick="ShowCreateWindow()">Добавить</button>
+    <button type="button" class="btn btn-warning" onclick="ShowUpdateWindow()">Изменить</button>
+    <button type="button" class="btn btn-danger" onclick="ShowDeleteWindow()">Удалить</button>
+
+    <table class="table table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Метеостанция</th>
+                <th scope="col">Температура</th>
+                <th scope="col">Точка росы</th>
+                <th scope="col">Количество осадков</th>
+                <th scope="col">Дата</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var day in MonthDAO.Instance.ReadByUser(ViewBag.Month, ViewBag.UserId))
+            {
+                <tr>
+                    <td>@day.Id</td>
+                    <td>@WeatherStationDAO.Instance.GetName(day.WeatherStationId)</td>
+                    <td>@day.Temperature</td>
+                    <td>@day.Dew</td>
+                    <td>@day.Precipitation</td>
+                    <td>@day.Date.ToString("yyyy-MM-dd")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Create -->
+    <div id="CreateWindow" style="width: 30%; height: 40%; background: white; padding: 20px; position: absolute; left: 0; top: 0; right: 0; bottom: 0; margin-left: auto; margin-top: auto; margin-right: auto; margin-bottom: auto; z-index: 2; visibility: hidden;">
+        <form asp-controller="Months" asp-action="Create" method="post">
+            <table>
+                <tr style="display: none;">
+                    <td>Month</td>
+                    <td><input type="text" name="month" value="@ViewBag.Month"></td>
+                </tr>
+                <tr>
+                    <td>Метеостанция:</td>
+                    <td><input type="text" name="station"></td>
+                </tr>
+                <tr>
+                    <td>Температура:</td>
+                    <td><input type="text" name="temperature"></td>
+                </tr>
+                <tr>
+                    <td>Точка росы:</td>
+                    <td><input type="text" name="dew"></td>
+                </tr>
+                <tr>
+                    <td>Количество осадков:</td>
+                    <td><input type="text" name="precipitation"></td>
+                </tr>
+                <tr>
+                    <td>Дата:</td>
+                    <td><input type="date" name="date"></td>
+                </tr>
+            </table>
+
+            <input type="submit" value="Подтвердить" class="btn btn-success" style="position: absolute; left: 5%; top: 85%;">
+        </form>
+
+        <button type="button" class="btn btn-success" style="position: absolute; left: 80%; top: 85%;" onclick="HideCreateWindow()">Отмена</button>
+    </div>
+
+    <!-- Update -->
+    <div id="UpdateWindow" style="width: 30%; height: 40%; background: white; padding: 20px; position: absolute; left: 0; top: 0; right: 0; bottom: 0; margin-left: auto; margin-top: auto; margin-right: auto; margin-bottom: auto; z-index: 2; visibility: hidden;">
+        <form asp-controller="Months" asp-action="Update" method="post">
+            <table>
+                <tr style="display: none;">
+                    <td>Month</td>
+                    <td><input type="text" name="month" value="@ViewBag.Month"></td>
+                </tr>
+                <tr>
+                    <td>ID:</td>
+                    <td><input type="text" name="id"></td>
+                </tr>
+                <tr>
+                    <td>Метеостанция:</td>
+                    <td><input type="text" name="station"></td>
+                </tr>
+                <tr>
+                    <td>Температура:</td>
+                    <td><input type="text" name="temperature"></td>
+                </tr>
+                <tr>
+                    <td>Точка росы:</td>
+                    <td><input type="text" name="dew"></td>
+                </tr>
+                <tr>
+                    <td>Количество осадков:</td>
+                    <td><input type="text" name="precipitation"></td>
+                </tr>
+                <tr>
+                    <td>Дата:</td>
+                    <td><input type="date" name="date"></td>
+                </tr>
+            </table>
+
+            <input type="submit" value="Подтвердить" class="btn btn-success" style="position: absolute; left: 5%; top: 85%;">
+        </form>
+
+        <button type="button" class="btn btn-success" style="position: absolute; left: 80%; top: 85%;" onclick="HideUpdateWindow()">Отмена</button>
+    </div>
+
+    <!-- Delete -->
+    <div id="DeleteWindow" style="width: 30%; height: 40%; background: white; padding: 20px; position: absolute; left: 0; top: 0; right: 0; bottom: 0; margin-left: auto; margin-top: auto; margin-right: auto; margin-bottom: auto; z-index: 2; visibility: hidden;">
+        <form asp-controller="Months" asp-action="Delete" method="post">
+            <table>
+                <tr style="display: none;">
+                    <td>Month</td>
+                    <td><input type="text" name="month" value="@ViewBag.Month"></td>
+                </tr>
+                <tr>
+                    <td>ID:</td>
+                    <td><input type="text" name="id"></td>
+                </tr>
+            </table>
+
+            <input type="submit" value="Подтвердить" class="btn btn-success" style="position: absolute; left: 5%; top: 85%;">
+        </form>
+
+        <button type="button" class="btn btn-success" style="position: absolute; left: 80%; top: 85%;" onclick="HideDeleteWindow()">Отмена</button>
+    </div>
+
+    <div id="BlackOverlay" style="width: 100%; height: 100%; background: black; opacity: 0.5; position: absolute; left: 0; top: 0; z-index: 1; visibility: hidden;"></div>
+
+    <script>
+
+        function ShowCreateWindow() {
+            document.getElementById("BlackOverlay").style.visibility = "visible";
+            document.getElementById("CreateWindow").style.visibility = "visible";
+        }
+
+        function HideCreateWindow() {
+            document.getElementById("BlackOverlay").style.visibility = "hidden";
+            document.getElementById("CreateWindow").style.visibility = "hidden";
+        }
+
+        function ShowDeleteWindow() {
+            document.getElementById("BlackOverlay").style.visibility = "visible";
+            document.getElementById("DeleteWindow").style.visibility = "visible";
+        }
+
+        function HideDeleteWindow() {
+            document.getElementById("BlackOverlay").style.visibility = "hidden";
+            document.getElementById("DeleteWindow").style.visibility = "hidden";
+        }
+
+        function ShowUpdateWindow() {
+            document.getElementById("BlackOverlay").style.visibility = "visible";
+            document.getElementById("UpdateWindow").style.visibility = "visible";
+        }
+
+        function HideUpdateWindow() {
+            document.getElementById("BlackOverlay").style.visibility = "hidden";
+            document.getElementById("UpdateWindow").style.visibility = "hidden";
+        }
+
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>
