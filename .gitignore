@@ -8,3 +8,4 @@ packages/
 *.userprefs
 *DS_Store
 *.sln.ide
+lib/
